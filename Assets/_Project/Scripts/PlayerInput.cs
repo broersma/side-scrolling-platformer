@@ -4,6 +4,7 @@ public class PlayerInput : MonoBehaviour
 {
     public CharacterController2D CharacterController;
     public float MoveSpeed = 1f;
+    public Animator Animator;
 
     private float move;
     private bool jump;
@@ -16,12 +17,19 @@ public class PlayerInput : MonoBehaviour
         if ( Input.GetButtonDown("Jump") )
         {
             jump = true;
+            Animator.SetBool("Jumping", true);
         }
+
+        Animator.SetBool("Running", Mathf.Abs(move) > 0.1f);
+    }
+
+    public void OnLanding()
+    {
+        Animator.SetBool("Jumping", false);
     }
 
     private void FixedUpdate()
     {
-
         CharacterController.Move(move * Time.fixedDeltaTime, crouch, jump);
         jump = false;
     }

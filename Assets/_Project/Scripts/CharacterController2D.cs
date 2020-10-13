@@ -43,19 +43,24 @@ public class CharacterController2D : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		bool wasGrounded = m_Grounded;
-		m_Grounded = false;
+		// Only do ground check if we are moving downwards.
+        float angle = Vector2.SignedAngle(m_Rigidbody2D.velocity, Vector2.down);
+        if (angle > -90 && angle < 90 )
+        {
+			bool wasGrounded = m_Grounded;
+			m_Grounded = false;
 
-		// The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
-		// This can be done using layers instead but Sample Assets will not overwrite your project settings.
-		Collider2D[] colliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, m_WhatIsGround);
-		for (int i = 0; i < colliders.Length; i++)
-		{
-			if (colliders[i].gameObject != gameObject)
+			// The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
+			// This can be done using layers instead but Sample Assets will not overwrite your project settings.
+			Collider2D[] colliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, m_WhatIsGround);
+			for (int i = 0; i < colliders.Length; i++)
 			{
-				m_Grounded = true;
-				if (!wasGrounded)
-					OnLandEvent.Invoke();
+				if (colliders[i].gameObject != gameObject)
+				{
+					m_Grounded = true;
+					if (!wasGrounded)
+						OnLandEvent.Invoke();
+				}
 			}
 		}
 	}
