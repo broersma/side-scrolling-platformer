@@ -11,7 +11,9 @@
 - For the character controller I used Brackeys 2D Character Controller script as a basis. Time is short!
 - I added a Slippery Physics Material so Player's Rigid Body 2D wouldn't get stuck on the sides of walls. However, this caused Player to slide off the edge of platforms, because I initially had a Circle Collider 2D for his feet and a Box Collider 2D for his head. I replaced both with a single rounded Box Collider 2D.
 - Because it uses a checking radius of 0.2f units, Brackeys 2D Character Controller ground check triggered immediately after jumping. This caused my jumping animation to be cut short just after starting. I fixed this by letting the Character Controller only do the ground check if its velocity was downward. I did some quick testing (including checking what happened if Player was nearly pinned below a ceiling) and it seemed to work well enough.
-- ...
+- Actually, the previous testing was not good enough. :-D There were still some edge cases. I decided to add two more ground check points (one for each of Player's legs) so you can also jump when standing on the very edge of a platform, and add a timer which decides the minimum time (currently 0.1 seconds) to show the jumping animation. Furthermore I added an event to let the Character-Controller notify PlayerInput when jumping is actually happening, so it can set the animation at the right time.
+- I made it so the Jump Force is just enough to jump on top of a wall that is two tiles high. This way you can choose whether to walk under or over platforms.
+- I made Player the same size as the level's tiles, because it's simpler that way, and no immediate need to have it differently.
 
 ### Actual time spent
 - 1:56 Project setup, importing assets, create basic testing level, create player avatar with character controller, adding Cinemachine follow camera.
@@ -19,6 +21,7 @@
 
 ### Possible code improvements
 - Add renderer sorting layers instead of using Sorting Order within the Default layer.
+- Maybe add a low jump and a high jump, depending on length of Jump button press. This would allow more skill-based gameplay.
 - ...
 
 ### Third-party code/tools

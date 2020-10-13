@@ -17,10 +17,14 @@ public class PlayerInput : MonoBehaviour
         if ( Input.GetButtonDown("Jump") )
         {
             jump = true;
-            Animator.SetBool("Jumping", true);
         }
 
         Animator.SetBool("Running", Mathf.Abs(move) > 0.1f);
+    }
+
+    public void OnJumping()
+    {
+        Animator.SetBool("Jumping", true);
     }
 
     public void OnLanding()

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.Events;
 
 public class CharacterController2D : MonoBehaviour
@@ -9,6 +10,8 @@ public class CharacterController2D : MonoBehaviour
 	[SerializeField] private bool m_AirControl = false;                         // Whether or not a player can steer while jumping;
 	[SerializeField] private LayerMask m_WhatIsGround;                          // A mask determining what is ground to the character
 	[SerializeField] private Transform m_GroundCheck;                           // A position marking where to check if the player is grounded.
+	[SerializeField] private Transform m_GroundCheck2;                          // A position marking where to check if the player is grounded.
+	[SerializeField] private Transform m_GroundCheck3;                          // A position marking where to check if the player is grounded.
 	[SerializeField] private Transform m_CeilingCheck;                          // A position marking where to check for ceilings
 	[SerializeField] private Collider2D m_CrouchDisableCollider;                // A collider that will be disabled when crouching
 
@@ -22,6 +25,7 @@ public class CharacterController2D : MonoBehaviour
 	[Header("Events")]
 	[Space]
 
+	public UnityEvent OnJumpEvent;
 	public UnityEvent OnLandEvent;
 
 	[System.Serializable]
@@ -30,9 +34,14 @@ public class CharacterController2D : MonoBehaviour
 	public BoolEvent OnCrouchEvent;
 	private bool m_wasCrouching = false;
 
+	private bool allowLanding = false;
+
 	private void Awake()
 	{
 		m_Rigidbody2D = GetComponent<Rigidbody2D>();
+
+		if (OnJumpEvent == null)
+			OnJumpEvent = new UnityEvent();
 
 		if (OnLandEvent == null)
 			OnLandEvent = new UnityEvent();
@@ -42,31 +51,36 @@ public class CharacterController2D : MonoBehaviour
 	}
 
 	private void FixedUpdate()
-	{
-		// Only do ground check if we are moving downwards.
-        float angle = Vector2.SignedAngle(m_Rigidbody2D.velocity, Vector2.down);
-        if (angle > -90 && angle < 90 )
+    {
+		m_Grounded = IsGrounded(m_GroundCheck) || IsGrounded(m_GroundCheck2) || IsGrounded(m_GroundCheck3);
+
+		// Only trigger land event after a few moments of jumping.
+		if (m_Grounded && allowLanding)
         {
-			bool wasGrounded = m_Grounded;
-			m_Grounded = false;
+            OnLandEvent.Invoke();
+            allowLanding = false;
+        }
+    }
 
-			// The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
-			// This can be done using layers instead but Sample Assets will not overwrite your project settings.
-			Collider2D[] colliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, m_WhatIsGround);
-			for (int i = 0; i < colliders.Length; i++)
-			{
-				if (colliders[i].gameObject != gameObject)
-				{
-					m_Grounded = true;
-					if (!wasGrounded)
-						OnLandEvent.Invoke();
-				}
-			}
-		}
-	}
+    private bool IsGrounded(Transform groundCheck)
+    {
+        m_Grounded = false;
 
+		// The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
+		// This can be done using layers instead but Sample Assets will not overwrite your project settings.
+		Collider2D[] colliders = Physics2D.OverlapPointAll(groundCheck.position, m_WhatIsGround);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            if (colliders[i].gameObject != gameObject)
+            {
+				return true;
+            }
+        }
 
-	public void Move(float move, bool crouch, bool jump)
+		return false;
+    }
+
+    public void Move(float move, bool crouch, bool jump)
 	{
 		// If crouching, check to see if the character can stand up
 		if (!crouch)
@@ -129,12 +143,14 @@ public class CharacterController2D : MonoBehaviour
 				Flip();
 			}
 		}
+
 		// If the player should jump...
 		if (m_Grounded && jump)
 		{
 			// Add a vertical force to the player.
-			m_Grounded = false;
+			StartCoroutine(WaitAndAllowLanding());
 			m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
+			OnJumpEvent.Invoke();
 		}
 	}
 
@@ -148,5 +164,11 @@ public class CharacterController2D : MonoBehaviour
 		Vector3 theScale = transform.localScale;
 		theScale.x *= -1;
 		transform.localScale = theScale;
+	}
+
+	private IEnumerator WaitAndAllowLanding()
+    {
+		yield return new WaitForSeconds(0.1f);
+		allowLanding = true;
 	}
 }
