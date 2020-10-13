@@ -14,6 +14,8 @@
 - Actually, the previous testing was not good enough. :-D There were still some edge cases. I decided to add two more ground check points (one for each of Player's legs) so you can also jump when standing on the very edge of a platform, and add a timer which decides the minimum time (currently 0.1 seconds) to show the jumping animation. Furthermore I added an event to let the Character-Controller notify PlayerInput when jumping is actually happening, so it can set the animation at the right time.
 - I made it so the Jump Force is just enough to jump on top of a wall that is two tiles high. This way you can choose whether to walk under or over platforms.
 - I made Player the same size as the level's tiles, because it's simpler that way, and no immediate need to have it differently.
+- There is some weird hitch that sometimes occurs when running from a platform down to a platform that is 1 tile lower. I decided initially to add it to the possible code improvements section below, but I stumbled upon a fix which mentions this being caused by the shared edges of tiles causing unwanted collisions. The fix was to use a Composite Collider 2D.
+- ...
 
 ### Actual time spent
 - 1:56 Project setup, importing assets, create basic testing level, create player avatar with character controller, adding Cinemachine follow camera.

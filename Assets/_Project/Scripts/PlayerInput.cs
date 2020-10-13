@@ -5,6 +5,7 @@ public class PlayerInput : MonoBehaviour
     public CharacterController2D CharacterController;
     public float MoveSpeed = 1f;
     public Animator Animator;
+    public Gameplay GamePlay;
 
     private float move;
     private bool jump;
@@ -12,14 +13,23 @@ public class PlayerInput : MonoBehaviour
 
     void Update()
     {
-        // TODO crouch?
-        move = Input.GetAxisRaw("Horizontal") * MoveSpeed;
-        if ( Input.GetButtonDown("Jump") )
+        if (GamePlay.Playing)
         {
-            jump = true;
-        }
+            move = Input.GetAxisRaw("Horizontal") * MoveSpeed;
+            if (Input.GetButtonDown("Jump"))
+            {
+                jump = true;
+            }
 
-        Animator.SetBool("Running", Mathf.Abs(move) > 0.1f);
+            Animator.SetBool("Running", Mathf.Abs(move) > 0.1f);
+        }
+        else
+        {
+            if (Input.anyKeyDown)
+            {
+                GamePlay.RequestRestart();
+            }
+        }
     }
 
     public void OnJumping()
