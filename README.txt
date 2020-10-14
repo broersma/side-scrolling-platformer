@@ -34,11 +34,11 @@ The Circle Collider for the Saw is just a little smaller than its sprite. We don
 Sounds (and music) are a big part of game feel, so I had to add some. Sadly, I'm not a sound designer (yet!), but I can press the mutate button in SFXR very well. :-)
 
 ### Actual time spent
-- 1:56 Project setup, importing assets, create basic testing level, create player avatar with character controller, adding Cinemachine follow camera.
-- Tweak player movement
-- Add pickups and a victory condition
-- Add obstacles 
-- Add sounds
+- 2:00 Project setup, importing assets, create basic testing level, create player avatar with character controller, adding Cinemachine follow camera.
+- 4:00 Tweak player movement
+- 1:00 Add pickups and a victory condition
+- 0:40 Add obstacles 
+- 0:20 Add sounds
 - 0:30 Create the actual level, add a short story/goal introduction.
 
 ### Possible code improvements
