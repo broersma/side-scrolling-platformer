@@ -33,18 +33,21 @@ The Circle Collider for the Saw is just a little smaller than its sprite. We don
 
 Sounds (and music) are a big part of game feel, so I had to add some. Sadly, I'm not a sound designer (yet!), but I can press the mutate button in SFXR very well. :-)
 
-#### ...
-
 ### Actual time spent
 - 1:56 Project setup, importing assets, create basic testing level, create player avatar with character controller, adding Cinemachine follow camera.
-- ...
+- Tweak player movement
+- Add pickups and a victory condition
+- Add obstacles 
+- Add sounds
+- 0:30 Create the actual level, add a short story/goal introduction.
 
 ### Possible code improvements
 - Add renderer sorting layers instead of using Sorting Order within the Default layer.
-- Maybe add a low jump and a high jump, depending on length of Jump button press. This would allow more skill-based gameplay.
+- Maybe add a low jump and a high jump, depending on length of Jump button press. This would allow more skill-based gameplay and more possibilities for level design.
 - I would like to add some kind of animation to the Bits to signal their purpose.
-- ...
+- Add moving obstacles.
+- Code-wise the Gameplay and PlayerInput class are a little bit too coupled for my tastes. I would like to refactor these to make the code more self-explaining.
 
 ### Third-party code/tools
 - Brackeys 2D Character Controller: https://github.com/Brackeys/2D-Character-Controller
-- ...
+- sfxr: http://www.drpetter.se/project_sfxr.html
