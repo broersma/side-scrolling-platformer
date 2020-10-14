@@ -10,6 +10,12 @@ public class PlayerInput : MonoBehaviour
     private float move;
     private bool jump;
     private bool crouch;
+    private Vector2 startPosition;
+
+    private void Start()
+    {
+        startPosition = transform.position;
+    }
 
     void Update()
     {
@@ -25,6 +31,8 @@ public class PlayerInput : MonoBehaviour
         }
         else
         {
+            move = 0;
+            jump = false;
             if (Input.anyKeyDown)
             {
                 GamePlay.RequestRestart();
@@ -32,9 +40,27 @@ public class PlayerInput : MonoBehaviour
         }
     }
 
+    public void OnRestart()
+    {
+        GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
+        transform.position = startPosition;
+        GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+        Animator.SetBool("VictoryDance", false);
+    }
+
+    public void OnVictory()
+    {
+        Animator.SetBool("VictoryDance", true);
+        Animator.SetBool("Jumping", false);
+        Animator.SetBool("Running", false);
+    }
+
     public void OnJumping()
     {
-        Animator.SetBool("Jumping", true);
+        if (GamePlay.Playing)
+        {
+            Animator.SetBool("Jumping", true);
+        }
     }
 
     public void OnLanding()

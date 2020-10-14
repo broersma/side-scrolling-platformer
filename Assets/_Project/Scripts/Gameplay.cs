@@ -1,17 +1,21 @@
 ﻿using System.Collections;
 using UnityEngine;
+using System.Linq;
 using UnityEngine.UI;
 
 public class Gameplay : MonoBehaviour
 {
-    public GameObject Player;
+    public PlayerInput Player;
 
     public Text TitleText;
     public Text CreditsText;
     public Text PressAnyKeyToContinueText;
+    public Text PressAnyKeyToRestartText;
+    public Text VictoryText;
     public Text GameOverText;
-    private Vector2 playerStartPosition;
+    public Text ScoreText;
     private bool restartAllowed;
+    private int score;
 
     public bool Playing { get; private set; }
 
@@ -20,9 +24,19 @@ public class Gameplay : MonoBehaviour
         Playing = false;
         TitleText.gameObject.SetActive(true);
         CreditsText.gameObject.SetActive(true);
-        StartCoroutine(EnablePressAnyKeyToStart());
+        StartCoroutine(EnablePressAnyKeyToStart(1f, false));
+    }
 
-        playerStartPosition = Player.transform.position;
+    public void IncreaseScore()
+    {
+        score++;
+
+        ScoreText.text = score.ToString();
+
+        if ( score >= 2 )
+        {
+            TriggerVictory();
+        }
     }
 
     void Update()
@@ -34,6 +48,19 @@ public class Gameplay : MonoBehaviour
         }
     }
 
+    private void TriggerVictory()
+    {
+        if (Playing)
+        {
+            Playing = false;
+            VictoryText.gameObject.SetActive(true);
+
+            Player.OnVictory();
+
+            StartCoroutine(EnablePressAnyKeyToStart(3f, true));
+        }
+    }
+
     private void TriggerGameOver()
     {
         if ( Playing )
@@ -41,21 +68,23 @@ public class Gameplay : MonoBehaviour
             Playing = false;
             GameOverText.gameObject.SetActive(true);
 
-            StartCoroutine(EnablePressAnyKeyToStart());
+            ScoreText.gameObject.SetActive(false);
+
+            StartCoroutine(EnablePressAnyKeyToStart(1f, true));
        }
     }
 
-    private IEnumerator EnablePressAnyKeyToStart()
+    private IEnumerator EnablePressAnyKeyToStart(float waitBeforeRestartAllowed, bool restart)
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(waitBeforeRestartAllowed);
 
         restartAllowed = true;
 
         while (!Playing)
         {
-            PressAnyKeyToContinueText.gameObject.SetActive(true);
+            (restart ? PressAnyKeyToRestartText : PressAnyKeyToContinueText).gameObject.SetActive(true);
             yield return new WaitForSeconds(0.8f);
-            PressAnyKeyToContinueText.gameObject.SetActive(false);
+            (restart ? PressAnyKeyToRestartText : PressAnyKeyToContinueText).gameObject.SetActive(false);
             yield return new WaitForSeconds(0.3f);
         }
     }
@@ -67,10 +96,15 @@ public class Gameplay : MonoBehaviour
             TitleText.gameObject.SetActive(false);
             CreditsText.gameObject.SetActive(false);
             GameOverText.gameObject.SetActive(false);
+            VictoryText.gameObject.SetActive(false);
             PressAnyKeyToContinueText.gameObject.SetActive(false);
-            Player.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
-            Player.transform.position = playerStartPosition;
-            Player.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+            PressAnyKeyToRestartText.gameObject.SetActive(false);
+            Player.OnRestart();
+
+            score = 0;
+            ScoreText.gameObject.SetActive(true);
+            ScoreText.text = score.ToString();
+            FindObjectsOfType<Bit>().ToList().ForEach(bit => bit.Reset());
 
             Playing = true;
             restartAllowed = false;
