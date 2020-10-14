@@ -61,7 +61,7 @@ public class Gameplay : MonoBehaviour
         }
     }
 
-    private void TriggerGameOver()
+    public void TriggerGameOver()
     {
         if ( Playing )
         {

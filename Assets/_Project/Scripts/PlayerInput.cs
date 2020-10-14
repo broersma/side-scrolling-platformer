@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections;
+using UnityEngine;
 
 public class PlayerInput : MonoBehaviour
 {
@@ -40,12 +42,33 @@ public class PlayerInput : MonoBehaviour
         }
     }
 
+    public void OnHit()
+    {
+        Animator.SetBool("Hurting", true);
+        Animator.SetBool("Jumping", false);
+        Animator.SetBool("Running", false);
+        GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
+        GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        StartCoroutine(Disappear());
+        GamePlay.TriggerGameOver();
+    }
+
+    private IEnumerator Disappear()
+    {
+        yield return new WaitForSeconds(1f);
+
+        GetComponent<SpriteRenderer>().enabled = false;
+    }
+
     public void OnRestart()
     {
+        GetComponent<SpriteRenderer>().enabled = true;
+
         GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
         transform.position = startPosition;
         GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
         Animator.SetBool("VictoryDance", false);
+        Animator.SetBool("Hurting", false);
     }
 
     public void OnVictory()
