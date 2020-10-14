@@ -48,6 +48,7 @@ Sounds (and music) are a big part of game feel, so I had to add some. Sadly, I'm
 - Add moving obstacles.
 - Code-wise the Gameplay and PlayerInput class are a little bit too coupled for my tastes. I would like to refactor these to make the code more self-explaining.
 - It seems like there is a small bug where both "Press any key" texts are shown and overlap. This might be caused by a Coroutine I should stop, but I would have to look into it.
+- I would have liked to add a Mario-style jump where you are able to jump for a few milliseconds after walking off of a platform. This would prevent Player from sometimes just awkwardly walking to his death.
 
 ### Third-party code/tools
 - Brackeys 2D Character Controller: https://github.com/Brackeys/2D-Character-Controller

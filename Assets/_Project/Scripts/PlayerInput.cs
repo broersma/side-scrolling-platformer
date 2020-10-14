@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class PlayerInput : MonoBehaviour
@@ -18,7 +17,6 @@ public class PlayerInput : MonoBehaviour
 
     private float move;
     private bool jump;
-    private bool crouch;
     private Vector2 startPosition;
 
     private void Start()
@@ -112,7 +110,7 @@ public class PlayerInput : MonoBehaviour
 
     private void FixedUpdate()
     {
-        CharacterController.Move(move * Time.fixedDeltaTime, crouch, jump);
+        CharacterController.Move(move * Time.fixedDeltaTime, false, jump);
         jump = false;
     }
 }
