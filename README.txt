@@ -47,6 +47,7 @@ Sounds (and music) are a big part of game feel, so I had to add some. Sadly, I'm
 - I would like to add some kind of animation to the Bits to signal their purpose.
 - Add moving obstacles.
 - Code-wise the Gameplay and PlayerInput class are a little bit too coupled for my tastes. I would like to refactor these to make the code more self-explaining.
+- It seems like there is a small bug where both "Press any key" texts are shown and overlap. This might be caused by a Coroutine I should stop, but I would have to look into it.
 
 ### Third-party code/tools
 - Brackeys 2D Character Controller: https://github.com/Brackeys/2D-Character-Controller

@@ -40,7 +40,7 @@ public class Gameplay : MonoBehaviour
         ScoreText.text = score.ToString();
         AudioSource.PlayOneShot(BitPickupClip);
 
-        if ( score >= 2 )
+        if ( score >= 8 )
         {
             TriggerVictory();
         }
