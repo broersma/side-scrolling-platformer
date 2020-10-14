@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
+using System;
 
 public class Gameplay : MonoBehaviour
 {
@@ -15,12 +16,16 @@ public class Gameplay : MonoBehaviour
     public Text GameOverText;
     public Text ScoreText;
 
+    public GameObject Story;
+    private Vector3 storyPosition;
+
     public AudioSource AudioSource;
     public AudioClip StartClip;
     public AudioClip BitPickupClip;
     public AudioClip FallClip;
 
     private bool restartAllowed;
+    private bool firstStart;
     private int score;
 
     public bool Playing { get; private set; }
@@ -31,6 +36,8 @@ public class Gameplay : MonoBehaviour
         TitleText.gameObject.SetActive(true);
         CreditsText.gameObject.SetActive(true);
         StartCoroutine(EnablePressAnyKeyToStart(1f, false));
+
+        storyPosition = Story.transform.position;
     }
 
     public void IncreaseScore()
@@ -55,6 +62,8 @@ public class Gameplay : MonoBehaviour
             AudioSource.PlayOneShot(FallClip);
             TriggerGameOver();
         }
+
+        Story.transform.position = storyPosition + new Vector3(Mathf.Sin(Time.time * 0.9f) * 0.1f, Mathf.Sin(Time.time) * 0.05f, 0);
     }
 
     private void TriggerVictory()
@@ -89,6 +98,8 @@ public class Gameplay : MonoBehaviour
 
         restartAllowed = true;
 
+        firstStart = !restart;
+
         while (!Playing)
         {
             (restart ? PressAnyKeyToRestartText : PressAnyKeyToContinueText).gameObject.SetActive(true);
@@ -102,6 +113,12 @@ public class Gameplay : MonoBehaviour
     {
         if (restartAllowed)
         {
+            Story.SetActive(firstStart);
+            if ( firstStart )
+            {
+                StartCoroutine(StoryFadeOut());
+            }
+
             TitleText.gameObject.SetActive(false);
             CreditsText.gameObject.SetActive(false);
             GameOverText.gameObject.SetActive(false);
@@ -120,5 +137,19 @@ public class Gameplay : MonoBehaviour
             Playing = true;
             restartAllowed = false;
         }
+    }
+
+    private IEnumerator StoryFadeOut()
+    {
+        yield return new WaitForSeconds(5f);
+
+        float t = 0;
+        while ( t < 1 )
+        {
+            t += 0.5f * Time.deltaTime;
+            Story.GetComponentInChildren<CanvasGroup>().alpha = 1 - t;
+            yield return null;
+        }
+        Story.GetComponentInChildren<CanvasGroup>().alpha = 0;
     }
 }
