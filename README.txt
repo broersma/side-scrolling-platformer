@@ -29,6 +29,10 @@ I made Player the same size as the level's tiles, because it's simpler that way,
 
 The Circle Collider for the Bit is twice as big as its sprite. This makes picking it up feel more organic.
 
+The Circle Collider for the Saw is just a little smaller than its sprite. We don't want to be harsh. I added an animation to signal its deadliness.
+
+Sounds (and music) are a big part of game feel, so I had to add some. Sadly, I'm not a sound designer (yet!), but I can press the mutate button in SFXR very well. :-)
+
 #### ...
 
 ### Actual time spent
@@ -38,6 +42,7 @@ The Circle Collider for the Bit is twice as big as its sprite. This makes pickin
 ### Possible code improvements
 - Add renderer sorting layers instead of using Sorting Order within the Default layer.
 - Maybe add a low jump and a high jump, depending on length of Jump button press. This would allow more skill-based gameplay.
+- I would like to add some kind of animation to the Bits to signal their purpose.
 - ...
 
 ### Third-party code/tools

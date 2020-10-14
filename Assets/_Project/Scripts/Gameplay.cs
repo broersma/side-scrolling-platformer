@@ -14,6 +14,12 @@ public class Gameplay : MonoBehaviour
     public Text VictoryText;
     public Text GameOverText;
     public Text ScoreText;
+
+    public AudioSource AudioSource;
+    public AudioClip StartClip;
+    public AudioClip BitPickupClip;
+    public AudioClip FallClip;
+
     private bool restartAllowed;
     private int score;
 
@@ -32,6 +38,7 @@ public class Gameplay : MonoBehaviour
         score++;
 
         ScoreText.text = score.ToString();
+        AudioSource.PlayOneShot(BitPickupClip);
 
         if ( score >= 2 )
         {
@@ -42,8 +49,10 @@ public class Gameplay : MonoBehaviour
     void Update()
     {
         // Don't fall down a pit.
-        if (Player.transform.position.y < -5)
+        if (Playing && Player.transform.position.y < -5)
         {
+
+            AudioSource.PlayOneShot(FallClip);
             TriggerGameOver();
         }
     }
@@ -105,6 +114,8 @@ public class Gameplay : MonoBehaviour
             ScoreText.gameObject.SetActive(true);
             ScoreText.text = score.ToString();
             FindObjectsOfType<Bit>().ToList().ForEach(bit => bit.Reset());
+
+            AudioSource.PlayOneShot(StartClip);
 
             Playing = true;
             restartAllowed = false;

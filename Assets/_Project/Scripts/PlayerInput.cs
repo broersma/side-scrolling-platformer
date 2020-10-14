@@ -9,6 +9,13 @@ public class PlayerInput : MonoBehaviour
     public Animator Animator;
     public Gameplay GamePlay;
 
+
+    public AudioSource AudioSource;
+    public AudioClip JumpClip;
+    public AudioClip LandClip;
+    public AudioClip SawHitClip;
+    public AudioClip VictoryClip;
+
     private float move;
     private bool jump;
     private bool crouch;
@@ -44,6 +51,7 @@ public class PlayerInput : MonoBehaviour
 
     public void OnHit()
     {
+        AudioSource.PlayOneShot(SawHitClip);
         Animator.SetBool("Hurting", true);
         Animator.SetBool("Jumping", false);
         Animator.SetBool("Running", false);
@@ -76,18 +84,29 @@ public class PlayerInput : MonoBehaviour
         Animator.SetBool("VictoryDance", true);
         Animator.SetBool("Jumping", false);
         Animator.SetBool("Running", false);
+
+        StartCoroutine(PlayVictoryClip());
+    }
+
+    private IEnumerator PlayVictoryClip()
+    {
+        // Wait for pickup sound to have played.
+        yield return new WaitForSeconds(0.3f);
+        AudioSource.PlayOneShot(VictoryClip);
     }
 
     public void OnJumping()
     {
         if (GamePlay.Playing)
         {
+            AudioSource.PlayOneShot(JumpClip);
             Animator.SetBool("Jumping", true);
         }
     }
 
     public void OnLanding()
     {
+        AudioSource.PlayOneShot(LandClip);
         Animator.SetBool("Jumping", false);
     }
 
